@@ -1,0 +1,164 @@
+openapi: 3.0.0
+
+info:
+  title: Expense Manager API
+  version: 1.0.0
+  description: RESTful API for managing personal expenses.
+  license:
+    name: MIT
+
+servers:
+  - url: http://127.0.0.1:8000/api
+
+security: []
+
+paths:
+  /expenses:
+    get:
+      summary: Get all expenses
+      description: Returns a list of all stored expenses.
+      responses:
+        '200':
+          description: Expenses retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Expense'
+
+    post:
+          summary: Create a new expense
+          description: Stores a new expense.
+          requestBody:
+            required: true
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/Expense'
+          responses:
+            '201':
+              description: Expense created successfully
+              content:
+                application/json:
+                  schema:
+                    $ref: '#/components/schemas/Expense'
+            '422':
+              description: Validation error
+
+  /expenses/search:
+    get:
+      summary: Search expenses
+      description: Searches expenses by description or expense type.
+      parameters:
+        - name: query
+          in: query
+          required: true
+          schema:
+            type: string
+          description: Search text used to match expense description or type.
+      responses:
+        '200':
+          description: Matching expenses retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Expense'
+        '422':
+          description: Invalid search query
+
+  /expenses/{id}:
+              get:
+                summary: Get a single expense
+                description: Returns one expense by its ID.
+                parameters:
+                  - name: id
+                    in: path
+                    required: true
+                    schema:
+                      type: integer
+                responses:
+                  '200':
+                    description: Expense retrieved successfully
+                    content:
+                      application/json:
+                        schema:
+                          $ref: '#/components/schemas/Expense'
+                  '404':
+                    description: Expense not found
+
+              put:
+                  summary: Update an expense
+                  description: Updates an existing expense by its ID.
+                  parameters:
+                    - name: id
+                      in: path
+                      required: true
+                      schema:
+                        type: integer
+                  requestBody:
+                    required: true
+                    content:
+                      application/json:
+                        schema:
+                          $ref: '#/components/schemas/Expense'
+                  responses:
+                    '200':
+                      description: Expense updated successfully
+                      content:
+                        application/json:
+                          schema:
+                            $ref: '#/components/schemas/Expense'
+                    '404':
+                      description: Expense not found
+                    '422':
+                      description: Validation error
+
+              delete:
+                    summary: Delete an expense
+                    description: Deletes an existing expense by its ID.
+                    parameters:
+                      - name: id
+                        in: path
+                        required: true
+                        schema:
+                          type: integer
+                    responses:
+                      '200':
+                        description: Expense deleted successfully
+                      '404':
+                        description: Expense not found
+
+components:
+  schemas:
+    Expense:
+      type: object
+      required:
+        - date
+        - cost
+        - description
+        - expense_type
+      properties:
+        id:
+          type: integer
+          example: 1
+        date:
+          type: string
+          format: date
+          example: 2026-08-28
+        cost:
+          type: number
+          format: float
+          example: 2500.00
+        description:
+          type: string
+          example: Dinner
+        expense_type:
+          type: string
+          enum:
+            - travel
+            - food
+            - other
+          example: food
