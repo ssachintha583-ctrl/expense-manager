@@ -48,8 +48,9 @@ paths:
 
   /expenses/search:
     get:
-      summary: Search expenses
-      description: Searches expenses by description or expense type.
+      summary: Proposed search expenses endpoint
+      description: Proposed future API extension for searching expenses by description or expense type. This endpoint is documented for future development and is not implemented as a server-side Laravel route in the submitted version.
+      x-implementation-status: planned
       parameters:
         - name: query
           in: query
